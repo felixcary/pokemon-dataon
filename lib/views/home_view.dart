@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pokemon/providers/pokemon_provider.dart';
 import 'package:pokemon/providers/tab_provider.dart';
-import 'package:pokemon/views/pokemon_list_view.dart';
+import 'package:pokemon/views/pokemon_list/pokemon_list_view.dart';
 import 'package:pokemon/views/profile_view.dart';
 import 'package:provider/provider.dart';
 
@@ -44,11 +43,7 @@ class HomeView extends StatelessWidget {
   Widget _buildPage(int currentIndex) {
     switch (currentIndex) {
       case 0:
-        return ChangeNotifierProvider<PokemonProvider>(
-            create: (context) => PokemonProvider(),
-            builder: (context, child) {
-              return const PokemonListView();
-            });
+        return const PokemonListView();
       case 1:
         return const TabPage(title: 'Favorite');
       case 2:

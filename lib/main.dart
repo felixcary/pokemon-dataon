@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pokemon/app.dart';
 import 'package:pokemon/providers/auth_view_provider.dart';
+import 'package:pokemon/providers/pokemon_provider.dart';
+import 'package:pokemon/services/api_service.dart';
 import 'package:pokemon/services/database_services.dart';
 import 'package:pokemon/views/auth_view.dart';
 import 'package:pokemon/views/home_view.dart';
@@ -25,10 +27,16 @@ void main() async {
 void setupDependencyInjection() {
   final getIt = GetIt.instance;
 
+  getIt.registerLazySingleton(() => ApiService());
   getIt.registerLazySingleton(() => DatabaseService());
   getIt.registerFactory(
     () => AuthViewProvider(
       databaseService: getIt.get<DatabaseService>(),
+    ),
+  );
+  getIt.registerFactory(
+    () => PokemonProvider(
+      apiService: getIt.get<ApiService>(),
     ),
   );
 }
