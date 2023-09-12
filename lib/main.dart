@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:pokemon/app.dart';
 import 'package:pokemon/providers/auth_view_provider.dart';
 import 'package:pokemon/providers/pokemon_detail_provider.dart';
+import 'package:pokemon/providers/pokemon_favorite_provider.dart';
 import 'package:pokemon/providers/pokemon_provider.dart';
 import 'package:pokemon/services/api_service.dart';
 import 'package:pokemon/services/database_services.dart';
@@ -38,11 +39,18 @@ void setupDependencyInjection() {
   getIt.registerFactory(
     () => PokemonProvider(
       apiService: getIt.get<ApiService>(),
+      databaseService: getIt.get<DatabaseService>(),
     ),
   );
   getIt.registerFactory(
     () => PokemonDetailProvider(
       apiService: getIt.get<ApiService>(),
+      databaseService: getIt.get<DatabaseService>(),
+    ),
+  );
+  getIt.registerFactory(
+    () => PokemonFavoriteProvider(
+      databaseService: getIt.get<DatabaseService>(),
     ),
   );
 }

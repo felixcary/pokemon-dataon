@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokemon/providers/pokemon_detail_provider.dart';
+import 'package:pokemon/styles/colors.dart';
 import 'package:pokemon/utils/color_utils.dart';
 import 'package:pokemon/utils/string_utils.dart';
 import 'package:pokemon/widgets/cached_image.dart';
@@ -32,9 +33,31 @@ class PokemonDetailView extends StatelessWidget {
                     'normal',
               ),
               actions: [
-                IconButton(
-                  icon: const Icon(Icons.favorite_border),
-                  onPressed: () {},
+                Consumer<PokemonDetailProvider>(
+                  builder: (context, pokemonDetailProvider, child) {
+                    return IconButton(
+                      icon: Icon(
+                        pokemonDetailProvider.isFavorite
+                            ? Icons.favorite
+                            : Icons.favorite_border,
+                        color: pokemonDetailProvider.isFavorite
+                            ? AppColors.red
+                            : null,
+                      ),
+                      onPressed: () {
+                        bool isAdd = true;
+                        if (pokemonDetailProvider.isFavorite) {
+                          isAdd = false;
+                        }
+
+                        pokemonDetailProvider.toggleFavoritePokemon(
+                          pokemonSpecies:
+                              pokemonDetailProvider.pokemonDetail.species!,
+                          isAdd: isAdd,
+                        );
+                      },
+                    );
+                  },
                 ),
               ],
               elevation: 0,

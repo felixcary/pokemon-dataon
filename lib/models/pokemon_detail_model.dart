@@ -450,9 +450,11 @@ class Type {
 class PokemonSpecies {
   final String name;
   final String url;
+  bool isFavorite;
   PokemonSpecies({
     required this.name,
     required this.url,
+    this.isFavorite = false,
   });
 
   PokemonSpecies copyWith({
@@ -474,8 +476,8 @@ class PokemonSpecies {
 
   factory PokemonSpecies.fromMap(Map<String, dynamic> map) {
     return PokemonSpecies(
-      name: map['name'] as String,
-      url: map['url'] as String,
+      name: map['name'],
+      url: map['url'],
     );
   }
 
