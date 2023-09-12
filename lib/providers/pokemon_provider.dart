@@ -56,14 +56,15 @@ class PokemonProvider with ChangeNotifier {
   Future<void> searchPokemon(String name) async {
     isSearching = true;
     _showLoading(true);
-    if (name.isEmpty) {
-      isSearching = false;
-      fetchPokemonByType(selectedType);
-      return;
-    }
 
     if (_timer?.isActive ?? false) _timer?.cancel();
     _timer = Timer(const Duration(milliseconds: 500), () async {
+      if (name.isEmpty) {
+        isSearching = false;
+        fetchPokemonByType(selectedType);
+        return;
+      }
+
       try {
         _pokemonList = await apiService.searchPokemon(name);
         _showLoading(false);
