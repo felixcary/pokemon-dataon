@@ -5,5 +5,6 @@ class RouteConfig {
   static void configureRoutes(FluroRouter router) {
     homeViewRoute.define(router);
     authViewRoute.define(router);
+    pokemonDetailRoute.define(router);
   }
 }

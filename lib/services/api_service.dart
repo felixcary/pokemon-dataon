@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:pokemon/models/pokemon_detail_model.dart';
 
 class ApiService {
   static const baseUrl = 'https://pokeapi.co/api/v2';
@@ -56,6 +57,19 @@ class ApiService {
       return pokemonList;
     } else {
       throw Exception('Failed to search Pokemon by name');
+    }
+  }
+
+  Future<PokemonDetail> getPokemonByName(String name) async {
+    final response = await http.get(Uri.parse('$baseUrl/pokemon/$name'));
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final PokemonDetail pokemonDetail = PokemonDetail.fromMap(data);
+
+      return pokemonDetail;
+    } else {
+      throw Exception('Failed to fetch pokemon by name');
     }
   }
 }
