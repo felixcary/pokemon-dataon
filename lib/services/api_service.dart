@@ -16,22 +16,18 @@ class ApiService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> fetchPokemonByType(String type) async {
+  Future<List<PokemonSpecies>> fetchPokemonByType(String type) async {
     final response = await http.get(Uri.parse('$baseUrl/type/$type'));
     if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
+      final data = jsonDecode(response.body);
       final List<dynamic> pokemonDataList = data['pokemon'];
 
-      List<Map<String, dynamic>> pokemonList = [];
+      List<PokemonSpecies> pokemonList = [];
 
       for (var entry in pokemonDataList) {
-        String name = entry['pokemon']['name'];
-        String url = entry['pokemon']['url'];
-
-        pokemonList.add({
-          'name': name,
-          'url': url,
-        });
+        final PokemonSpecies pokemonSpecies =
+            PokemonSpecies.fromMap(entry['pokemon']);
+        pokemonList.add(pokemonSpecies);
       }
 
       return pokemonList;
@@ -40,19 +36,17 @@ class ApiService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> searchPokemon(String name) async {
+  Future<List<PokemonSpecies>> searchPokemon(String name) async {
     final response = await http.get(Uri.parse('$baseUrl/pokemon/$name'));
     if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
+      final data = jsonDecode(response.body);
+      List<PokemonSpecies> pokemonList = [];
 
-      List<Map<String, dynamic>> pokemonList = [];
-      String name = data['name'];
-      String url = data['species']['url'];
-
-      pokemonList.add({
-        'name': name,
-        'url': url,
-      });
+      final PokemonSpecies pokemonSpecies = PokemonSpecies(
+        name: data['name'],
+        url: data['species']['url'],
+      );
+      pokemonList.add(pokemonSpecies);
 
       return pokemonList;
     } else {

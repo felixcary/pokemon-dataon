@@ -18,4 +18,5 @@ class AppColors {
   static const Color rock = Color(0xFFD97845);
   static const Color poison = Color(0xFFB567CE);
   static const Color flying = Color(0xFF89AAE3);
+  static const Color red = Color(0xFFFD525C);
 }

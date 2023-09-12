@@ -18,7 +18,7 @@ class PokemonList extends StatelessWidget {
               itemBuilder: (context, index) {
                 final pokemon = pokemonProvider.pokemonList[index];
                 final List<String> parsedUrl =
-                    StringUtil.getParsedUrl(pokemon['url']);
+                    StringUtil.getParsedUrl(pokemon.url);
                 return GestureDetector(
                   onTap: () {
                     App().router.navigateTo(
@@ -26,7 +26,7 @@ class PokemonList extends StatelessWidget {
                           pokemonDetailRoute.name,
                           routeSettings: RouteSettings(
                             arguments: {
-                              'pokemonName': pokemon['name'],
+                              'pokemonName': pokemon.name,
                             },
                           ),
                         );
@@ -59,7 +59,7 @@ class PokemonList extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  StringUtil.capitalizeWords(pokemon['name']),
+                                  StringUtil.capitalizeWords(pokemon.name),
                                   style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 21,
@@ -93,19 +93,38 @@ class PokemonList extends StatelessWidget {
                             Positioned(
                               right: 8,
                               top: 8,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    width: 1,
-                                    color: Colors.white,
+                              child: GestureDetector(
+                                onTap: () {
+                                  bool isAdd = true;
+                                  if (pokemon.isFavorite) {
+                                    isAdd = false;
+                                  }
+
+                                  pokemonProvider.toggleFavoritePokemon(
+                                    pokemonSpecies: pokemon,
+                                    isAdd: isAdd,
+                                  );
+                                },
+                                child: Container(
+                                  decoration: ShapeDecoration(
+                                    color: Colors.black.withOpacity(0.3),
+                                    shape: const OvalBorder(
+                                      side: BorderSide(
+                                        width: 0.75,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                   ),
-                                  borderRadius: BorderRadius.circular(50),
-                                ),
-                                padding: const EdgeInsets.all(4),
-                                child: const Icon(
-                                  Icons.favorite_border,
-                                  size: 18,
-                                  color: Colors.white,
+                                  padding: const EdgeInsets.all(4),
+                                  child: Icon(
+                                    pokemon.isFavorite
+                                        ? Icons.favorite
+                                        : Icons.favorite_border,
+                                    size: 18,
+                                    color: pokemon.isFavorite
+                                        ? Colors.red
+                                        : Colors.white,
+                                  ),
                                 ),
                               ),
                             ),

@@ -6,12 +6,12 @@ import 'package:pokemon/providers/pokemon_provider.dart';
 import 'package:pokemon/utils/color_utils.dart';
 import 'package:pokemon/utils/string_utils.dart';
 import 'package:pokemon/widgets/cached_image.dart';
+import 'package:pokemon/widgets/empty_state.dart';
 import 'package:pokemon/widgets/loading_widget.dart';
 import 'package:provider/provider.dart';
 
 part 'widgets/pokemon_search_bar.dart';
 part 'widgets/pokemon_type_selection.dart';
-part 'widgets/empty_state.dart';
 part 'widgets/pokemon_list.dart';
 
 class PokemonListView extends StatelessWidget {

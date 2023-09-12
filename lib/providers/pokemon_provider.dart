@@ -2,13 +2,17 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:pokemon/models/pokemon_detail_model.dart';
 import 'package:pokemon/services/api_service.dart';
+import 'package:pokemon/services/database_services.dart';
 
 class PokemonProvider with ChangeNotifier {
   final ApiService apiService;
+  final DatabaseService databaseService;
 
   PokemonProvider({
     required this.apiService,
+    required this.databaseService,
   }) : super();
 
   String selectedType = 'normal';
@@ -19,8 +23,8 @@ class PokemonProvider with ChangeNotifier {
   List<String> _pokemonTypes = [];
   List<String> get pokemonTypes => _pokemonTypes;
 
-  List<Map<String, dynamic>> _pokemonList = [];
-  List<Map<String, dynamic>> get pokemonList => _pokemonList;
+  List<PokemonSpecies> _pokemonList = [];
+  List<PokemonSpecies> get pokemonList => _pokemonList;
 
   init() {
     _fetchPokemonTypes();
@@ -36,6 +40,11 @@ class PokemonProvider with ChangeNotifier {
     _showLoading(true);
     try {
       _pokemonList = await apiService.fetchPokemonByType(selectedType);
+
+      for (var element in _pokemonList) {
+        element.isFavorite = await getPokemonFavoriteStatus(element.name);
+      }
+
       _showLoading(false);
     } catch (e) {
       _showLoading(false);
@@ -73,5 +82,24 @@ class PokemonProvider with ChangeNotifier {
         _showLoading(false);
       }
     });
+  }
+
+  Future<bool> getPokemonFavoriteStatus(String pokemonName) async {
+    return await databaseService.getPokemonFavoriteStatus(pokemonName);
+  }
+
+  void toggleFavoritePokemon({
+    required PokemonSpecies pokemonSpecies,
+    required bool isAdd,
+  }) async {
+    await databaseService.removePokemonFromFavorite(pokemonSpecies.name);
+    if (isAdd) {
+      await databaseService.addPokemonToFavorite(pokemonSpecies);
+    }
+
+    for (var element in _pokemonList) {
+      element.isFavorite = await getPokemonFavoriteStatus(element.name);
+    }
+    notifyListeners();
   }
 }

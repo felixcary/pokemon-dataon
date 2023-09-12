@@ -1,8 +1,10 @@
+import 'package:pokemon/models/pokemon_detail_model.dart';
 import 'package:pokemon/models/user_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseService {
   static const String usersTable = 'users';
+  static const String pokemonFavoriteTable = 'pokemonFavorite';
 
   Future<Database> open() async {
     final databasePath = await getDatabasesPath();
@@ -23,6 +25,7 @@ class DatabaseService {
   Future<void> _createTables(Database db, int version) async {
     var batch = db.batch();
     _createTableUsers(batch);
+    _createTablePokemonFavorite(batch);
     await batch.commit();
   }
 
@@ -33,6 +36,17 @@ class DatabaseService {
         id INTEGER PRIMARY KEY,
         email TEXT,
         password TEXT
+      )
+    ''');
+  }
+
+  void _createTablePokemonFavorite(Batch batch) {
+    batch.execute('DROP TABLE IF EXISTS $pokemonFavoriteTable');
+    batch.execute('''
+      CREATE TABLE $pokemonFavoriteTable (
+        id INTEGER PRIMARY KEY,
+        name TEXT,
+        url TEXT
       )
     ''');
   }
@@ -56,5 +70,39 @@ class DatabaseService {
     }
 
     return UserModel.fromMap(maps.first);
+  }
+
+  Future<void> addPokemonToFavorite(PokemonSpecies pokemonSpecies) async {
+    final db = await open();
+
+    await db.insert(
+      pokemonFavoriteTable,
+      pokemonSpecies.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    await db.close();
+  }
+
+  Future<void> removePokemonFromFavorite(String name) async {
+    final db = await open();
+    await db.delete(pokemonFavoriteTable, where: 'name = ?', whereArgs: [name]);
+    await db.close();
+  }
+
+  Future<bool> getPokemonFavoriteStatus(String name) async {
+    final db = await open();
+    final pokemonData = await db
+        .query(pokemonFavoriteTable, where: 'name = ?', whereArgs: [name]);
+    return pokemonData.isNotEmpty;
+  }
+
+  Future<List<PokemonSpecies>> getAllPokemonFavorite() async {
+    final db = await open();
+
+    final pokemonFavoriteMap = await db.query(pokemonFavoriteTable);
+    var pokemonFavorite = pokemonFavoriteMap
+        .map((result) => PokemonSpecies.fromMap(result))
+        .toList();
+    return pokemonFavorite;
   }
 }
