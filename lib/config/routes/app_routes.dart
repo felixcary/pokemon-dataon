@@ -7,6 +7,7 @@ import 'package:pokemon/views/auth/sign_in_view.dart';
 import 'package:pokemon/views/auth/sign_up_view.dart';
 import 'package:pokemon/views/home_view.dart';
 import 'package:pokemon/views/pokemon_detail/pokemon_detail_view.dart';
+import 'package:pokemon/views/profile_view/edit_profile.dart';
 import 'package:provider/provider.dart';
 
 final RouteMap homeViewRoute = RouteMap(
@@ -31,7 +32,7 @@ final RouteMap signInRoute = RouteMap(
   '/signin',
   Handler(
     handlerFunc: (context, Map<String, List<String>> params) {
-      return const SignInView();
+      return SignInView();
     },
   ),
 );
@@ -40,7 +41,16 @@ final RouteMap signUpRoute = RouteMap(
   '/signup',
   Handler(
     handlerFunc: (context, Map<String, List<String>> params) {
-      return const SignUpView();
+      return SignUpView();
+    },
+  ),
+);
+
+final RouteMap editProfileRoute = RouteMap(
+  '/edit_profile',
+  Handler(
+    handlerFunc: (context, Map<String, List<String>> params) {
+      return EditProfileView();
     },
   ),
 );

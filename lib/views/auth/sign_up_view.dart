@@ -8,15 +8,14 @@ import 'package:pokemon/utils/string_utils.dart';
 import 'package:provider/provider.dart';
 
 class SignUpView extends StatelessWidget {
-  const SignUpView({super.key});
+  SignUpView({super.key});
 
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    final TextEditingController nameController = TextEditingController();
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController passwordController = TextEditingController();
-
     return ChangeNotifierProvider<AuthProvider>(
       create: (context) => GetIt.I.get<AuthProvider>(),
       builder: (context, child) {
@@ -69,7 +68,7 @@ class SignUpView extends StatelessWidget {
                                 return 'Please enter a name.';
                               }
                               if (!StringUtil.isValidName(value)) {
-                                return 'Please enter a valid email address.';
+                                return 'Please enter a valid name.';
                               }
                               return null;
                             },

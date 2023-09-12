@@ -8,5 +8,6 @@ class RouteConfig {
     pokemonDetailRoute.define(router);
     signInRoute.define(router);
     signUpRoute.define(router);
+    editProfileRoute.define(router);
   }
 }

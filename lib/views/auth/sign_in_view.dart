@@ -8,14 +8,14 @@ import 'package:pokemon/utils/string_utils.dart';
 import 'package:provider/provider.dart';
 
 class SignInView extends StatelessWidget {
-  const SignInView({super.key});
+  SignInView({super.key});
+
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController passwordController = TextEditingController();
-
     return ChangeNotifierProvider<AuthProvider>(
       create: (context) => GetIt.I.get<AuthProvider>(),
       builder: (context, child) {
@@ -127,8 +127,7 @@ class SignInView extends StatelessWidget {
                                     authProvider: authProvider,
                                   );
                                 } else {
-                                  authProvider.warningMessage =
-                                      'Wrong Email/Password, please retry';
+                                  authProvider.setWarningMessage();
                                 }
                               });
                             }

@@ -73,6 +73,19 @@ class DatabaseService {
     return UserModel.fromMap(maps.first);
   }
 
+  Future<void> updateProfile({
+    required String newName,
+    required int id,
+  }) async {
+    final db = await open();
+    await db.update(
+      usersTable,
+      {'name': newName},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
   Future<void> addPokemonToFavorite(PokemonSpecies pokemonSpecies) async {
     final db = await open();
 

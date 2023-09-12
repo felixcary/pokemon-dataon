@@ -3,22 +3,21 @@ import 'package:pokemon/models/user_model.dart';
 import 'package:pokemon/services/database_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AuthProvider extends ChangeNotifier {
+class ProfileProvider extends ChangeNotifier {
   final DatabaseService databaseService;
 
-  AuthProvider({
+  ProfileProvider({
     required this.databaseService,
   }) : super();
 
-  String name = '';
-  String email = '';
-  String password = '';
   String token = '';
   String warningMessage = '';
+  UserModel? userModel;
 
-  Future<void> saveUserDummyToken() async {
+  Future<void> deleteUserDummyToken() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('token', email);
+    prefs.remove('token');
+    notifyListeners();
   }
 
   Future<void> getUserDummyToken() async {
@@ -27,22 +26,22 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> saveUserToDatabase() async {
-    warningMessage = '';
-    final newUser = UserModel(name: name, email: email, password: password);
-    await databaseService.insertUser(newUser);
+  Future<void> getUserFromDatabase() async {
+    await getUserDummyToken();
+    userModel = await databaseService.getUserByEmail(token);
     notifyListeners();
   }
 
   void setWarningMessage() {
-    warningMessage = 'Wrong Email/Password, please retry';
+    warningMessage = 'Password not match';
     notifyListeners();
   }
 
-  Future<UserModel?> getUserFromDatabase() async {
-    warningMessage = '';
-    final userModel = await databaseService.getUserByEmail(email);
-    notifyListeners();
-    return userModel;
+  Future<void> updateUser({required String newName}) async {
+    await databaseService.updateProfile(
+      newName: newName,
+      id: userModel!.id!,
+    );
+    getUserFromDatabase();
   }
 }
