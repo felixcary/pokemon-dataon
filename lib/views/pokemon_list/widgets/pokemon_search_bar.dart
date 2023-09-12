@@ -16,6 +16,7 @@ class PokemonSearchBar extends StatelessWidget {
       return TextFormField(
         controller: searchController,
         decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(vertical: 0.0),
           border: OutlineInputBorder(
             borderSide: const BorderSide(
               color: Color(0xFFF2F2F2),

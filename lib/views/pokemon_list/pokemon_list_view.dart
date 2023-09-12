@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:pokemon/app.dart';
+import 'package:pokemon/config/routes/app_routes.dart';
 import 'package:pokemon/providers/pokemon_provider.dart';
 import 'package:pokemon/utils/color_utils.dart';
 import 'package:pokemon/utils/string_utils.dart';
 import 'package:pokemon/widgets/cached_image.dart';
+import 'package:pokemon/widgets/loading_widget.dart';
 import 'package:provider/provider.dart';
 
 part 'widgets/pokemon_search_bar.dart';
@@ -53,7 +56,7 @@ class PokemonListView extends StatelessWidget {
     required PokemonProvider pokemonProvider,
   }) {
     if (pokemonProvider.isLoading) {
-      return const Expanded(child: Center(child: CircularProgressIndicator()));
+      return const Expanded(child: Center(child: LoadingWidget()));
     }
 
     if (pokemonProvider.pokemonList.isEmpty && pokemonProvider.isSearching) {
