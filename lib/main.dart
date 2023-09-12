@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
+import 'package:pokemon/app.dart';
 import 'package:pokemon/providers/auth_view_provider.dart';
+import 'package:pokemon/services/database_services.dart';
 import 'package:pokemon/views/auth_view.dart';
 import 'package:pokemon/views/home_view.dart';
 import 'package:provider/provider.dart';
@@ -7,40 +11,51 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(const MyApp());
+  await App().init();
+  setupDependencyInjection();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]).then(
+    (value) => runApp(
+      const PokemonApp(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+void setupDependencyInjection() {
+  final getIt = GetIt.instance;
+
+  getIt.registerLazySingleton(() => DatabaseService());
+  getIt.registerFactory(
+    () => AuthViewProvider(
+      databaseService: getIt.get<DatabaseService>(),
+    ),
+  );
+}
+
+class PokemonApp extends StatelessWidget {
+  const PokemonApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: ChangeNotifierProvider<AuthViewProvider>(
-        create: (context) => AuthViewProvider(),
+        create: (context) => GetIt.I.get<AuthViewProvider>(),
         builder: (context, child) {
+          final authViewProvider = Provider.of<AuthViewProvider>(context);
           return FutureBuilder(
-            future: Provider.of<AuthViewProvider>(context, listen: false)
-                .loadUserData(),
+            future: authViewProvider.getUserDummyToken(),
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                if (Provider.of<AuthViewProvider>(context).email.isNotEmpty) {
-                  return const HomeView();
-                }
-                return const AuthView();
-              } else {
-                return const CircularProgressIndicator();
+              if (authViewProvider.token.isNotEmpty) {
+                return const HomeView();
               }
+              return const AuthView();
             },
           );
         },
       ),
-      routes: {
-        '/home': (context) {
-          return const HomeView();
-        },
-      },
+      onGenerateRoute: App().router.generator,
     );
   }
 }
