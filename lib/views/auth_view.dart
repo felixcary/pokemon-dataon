@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:pokemon/app.dart';
+import 'package:pokemon/config/routes/app_routes.dart';
 import 'package:pokemon/providers/auth_view_provider.dart';
+import 'package:pokemon/utils/string_utils.dart';
 import 'package:provider/provider.dart';
 
 class AuthView extends StatelessWidget {
@@ -12,11 +16,12 @@ class AuthView extends StatelessWidget {
     final TextEditingController passwordController = TextEditingController();
 
     return ChangeNotifierProvider<AuthViewProvider>(
-        create: (context) => AuthViewProvider(),
-        builder: (context, child) {
-          return Scaffold(
-            appBar: AppBar(title: const Text('Authentication')),
-            body: Center(
+      create: (context) => GetIt.I.get<AuthViewProvider>(),
+      builder: (context, child) {
+        final authViewProvider = Provider.of<AuthViewProvider>(context);
+        return Scaffold(
+          body: Center(
+            child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Form(
@@ -24,20 +29,26 @@ class AuthView extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
+                      Image.asset(
+                        'assets/images/logo.png',
+                        fit: BoxFit.contain,
+                        width: double.infinity,
+                      ),
+                      const SizedBox(height: 24),
                       Consumer<AuthViewProvider>(
-                        builder: (context, authModel, child) {
+                        builder: (context, authViewProvider, child) {
                           return TextFormField(
                             controller: emailController,
                             decoration:
                                 const InputDecoration(labelText: 'Email'),
                             onChanged: (newEmail) {
-                              authModel.email = newEmail;
+                              authViewProvider.email = newEmail;
                             },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter an email address.';
                               }
-                              if (!isValidEmail(value)) {
+                              if (!StringUtil.isValidEmail(value)) {
                                 return 'Please enter a valid email address.';
                               }
                               return null;
@@ -46,7 +57,7 @@ class AuthView extends StatelessWidget {
                         },
                       ),
                       Consumer<AuthViewProvider>(
-                        builder: (context, authModel, child) {
+                        builder: (context, authViewProvider, child) {
                           return TextFormField(
                             controller: passwordController,
                             decoration:
@@ -59,43 +70,107 @@ class AuthView extends StatelessWidget {
                               if (value.length < 8) {
                                 return 'Password must be at least 8 characters long.';
                               }
-                              if (!containsDigit(value)) {
-                                return 'Password must contain at least one digit.';
-                              }
                               return null;
                             },
-                            onChanged: (newPassword) {},
+                            onChanged: (newPassword) {
+                              authViewProvider.password = newPassword;
+                            },
                           );
                         },
                       ),
-                      ElevatedButton(
-                        onPressed: () async {
-                          if (formKey.currentState!.validate()) {
-                            await Provider.of<AuthViewProvider>(context,
-                                    listen: false)
-                                .saveUserData()
-                                .then((value) {
-                              Navigator.of(context).pushNamed('/home');
-                            });
-                          }
-                        },
-                        child: const Text('Sign In'),
+                      Visibility(
+                        visible: authViewProvider.warningMessage.isNotEmpty,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 16),
+                          child: Text(
+                            authViewProvider.warningMessage,
+                            style: const TextStyle(
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (formKey.currentState!.validate()) {
+                              authViewProvider
+                                  .getUserFromDatabase()
+                                  .then((existingUser) {
+                                final String password =
+                                    authViewProvider.password;
+
+                                if (existingUser != null &&
+                                    existingUser.password == password) {
+                                  _navigateToHome(
+                                    context: context,
+                                    authViewProvider: authViewProvider,
+                                  );
+                                } else {
+                                  authViewProvider.warningMessage =
+                                      'Wrong Email/Password, please retry';
+                                }
+                              });
+                            }
+                          },
+                          child: const Text('Sign In'),
+                        ),
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            if (formKey.currentState!.validate()) {
+                              authViewProvider
+                                  .getUserFromDatabase()
+                                  .then((existingUser) {
+                                final String password =
+                                    authViewProvider.password;
+
+                                if (existingUser != null &&
+                                    existingUser.password == password) {
+                                  _navigateToHome(
+                                    context: context,
+                                    authViewProvider: authViewProvider,
+                                  );
+                                } else {
+                                  authViewProvider
+                                      .saveUserToDatabase()
+                                      .then((value) {
+                                    _navigateToHome(
+                                      context: context,
+                                      authViewProvider: authViewProvider,
+                                    );
+                                  });
+                                }
+                              });
+                            }
+                          },
+                          child: const Text('Sign Up'),
+                        ),
                       ),
                     ],
                   ),
                 ),
               ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 
-  bool isValidEmail(String value) {
-    return RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
-        .hasMatch(value);
-  }
-
-  bool containsDigit(String value) {
-    return value.contains(RegExp(r'\d'));
+  void _navigateToHome({
+    required BuildContext context,
+    required AuthViewProvider authViewProvider,
+  }) {
+    authViewProvider.saveUserDummyToken();
+    App().router.navigateTo(
+          context,
+          homeViewRoute.name,
+          clearStack: true,
+        );
   }
 }

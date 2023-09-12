@@ -16,6 +16,11 @@ class StringUtil {
   static String getImageUrl(int pokemonId) {
     return "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$pokemonId.png";
   }
+
+  static bool isValidEmail(String value) {
+    return RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
+        .hasMatch(value);
+  }
 }
 
 extension StringExtension on String {
