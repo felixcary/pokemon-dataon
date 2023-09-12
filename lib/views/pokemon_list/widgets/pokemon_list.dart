@@ -20,8 +20,10 @@ class PokemonList extends StatelessWidget {
                 final List<String> parsedUrl =
                     StringUtil.getParsedUrl(pokemon.url);
                 return GestureDetector(
-                  onTap: () {
-                    App().router.navigateTo(
+                  onTap: () async {
+                    await App()
+                        .router
+                        .navigateTo(
                           context,
                           pokemonDetailRoute.name,
                           routeSettings: RouteSettings(
@@ -29,7 +31,11 @@ class PokemonList extends StatelessWidget {
                               'pokemonName': pokemon.name,
                             },
                           ),
-                        );
+                        )
+                        .then((value) {
+                      pokemonProvider
+                          .fetchPokemonByType(pokemonProvider.selectedType);
+                    });
                   },
                   child: Container(
                     decoration: ShapeDecoration(

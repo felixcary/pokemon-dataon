@@ -16,8 +16,10 @@ class PokemonListFavorite extends StatelessWidget {
             final pokemon = pokemonFavoriteProvider.pokemonList[index];
             final List<String> parsedUrl = StringUtil.getParsedUrl(pokemon.url);
             return GestureDetector(
-              onTap: () {
-                App().router.navigateTo(
+              onTap: () async {
+                await App()
+                    .router
+                    .navigateTo(
                       context,
                       pokemonDetailRoute.name,
                       routeSettings: RouteSettings(
@@ -25,7 +27,10 @@ class PokemonListFavorite extends StatelessWidget {
                           'pokemonName': pokemon.name,
                         },
                       ),
-                    );
+                    )
+                    .then((value) {
+                  pokemonFavoriteProvider.getPokemonFavoriteList();
+                });
               },
               child: Container(
                 decoration: ShapeDecoration(
