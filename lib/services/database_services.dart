@@ -34,6 +34,7 @@ class DatabaseService {
     batch.execute('''
       CREATE TABLE $usersTable (
         id INTEGER PRIMARY KEY,
+        name TEXT,
         email TEXT,
         password TEXT
       )

@@ -21,6 +21,10 @@ class StringUtil {
     return RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
         .hasMatch(value);
   }
+
+  static bool isValidName(String value) {
+    return RegExp(r'^[a-zA-Z ]+$').hasMatch(value);
+  }
 }
 
 extension StringExtension on String {

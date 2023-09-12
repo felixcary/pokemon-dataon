@@ -3,15 +3,17 @@ import 'package:get_it/get_it.dart';
 import 'package:pokemon/app.dart';
 import 'package:pokemon/config/routes/app_routes.dart';
 import 'package:pokemon/providers/auth_view_provider.dart';
+import 'package:pokemon/styles/colors.dart';
 import 'package:pokemon/utils/string_utils.dart';
 import 'package:provider/provider.dart';
 
-class AuthView extends StatelessWidget {
-  const AuthView({super.key});
+class SignUpView extends StatelessWidget {
+  const SignUpView({super.key});
 
   @override
   Widget build(BuildContext context) {
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+    final TextEditingController nameController = TextEditingController();
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
 
@@ -20,6 +22,24 @@ class AuthView extends StatelessWidget {
       builder: (context, child) {
         final authViewProvider = Provider.of<AuthViewProvider>(context);
         return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            iconTheme: const IconThemeData(color: Colors.black),
+            title: const Text(
+              'Sign Up',
+              style: TextStyle(
+                color: Color(0xFF333333),
+                fontSize: 18,
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            backgroundColor: Colors.white,
+            elevation: 0,
+            shape: const Border(
+              bottom: BorderSide(color: Color(0xFFF2F2F2), width: 1),
+            ),
+          ),
           body: Center(
             child: SingleChildScrollView(
               child: Padding(
@@ -32,9 +52,30 @@ class AuthView extends StatelessWidget {
                       Image.asset(
                         'assets/images/logo.png',
                         fit: BoxFit.contain,
-                        width: double.infinity,
+                        width: MediaQuery.of(context).size.width * 0.4,
                       ),
                       const SizedBox(height: 24),
+                      Consumer<AuthViewProvider>(
+                        builder: (context, authViewProvider, child) {
+                          return TextFormField(
+                            controller: nameController,
+                            decoration:
+                                const InputDecoration(labelText: 'Name'),
+                            onChanged: (newName) {
+                              authViewProvider.name = newName;
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter a name.';
+                              }
+                              if (!StringUtil.isValidName(value)) {
+                                return 'Please enter a valid email address.';
+                              }
+                              return null;
+                            },
+                          );
+                        },
+                      ),
                       Consumer<AuthViewProvider>(
                         builder: (context, authViewProvider, child) {
                           return TextFormField(
@@ -94,33 +135,6 @@ class AuthView extends StatelessWidget {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {
-                            if (formKey.currentState!.validate()) {
-                              authViewProvider
-                                  .getUserFromDatabase()
-                                  .then((existingUser) {
-                                final String password =
-                                    authViewProvider.password;
-
-                                if (existingUser != null &&
-                                    existingUser.password == password) {
-                                  _navigateToHome(
-                                    context: context,
-                                    authViewProvider: authViewProvider,
-                                  );
-                                } else {
-                                  authViewProvider.warningMessage =
-                                      'Wrong Email/Password, please retry';
-                                }
-                              });
-                            }
-                          },
-                          child: const Text('Sign In'),
-                        ),
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
                               authViewProvider
@@ -148,6 +162,16 @@ class AuthView extends StatelessWidget {
                               });
                             }
                           },
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            backgroundColor: AppColors.darkBlue,
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 10,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                          ),
                           child: const Text('Sign Up'),
                         ),
                       ),

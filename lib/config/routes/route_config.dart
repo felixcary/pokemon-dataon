@@ -6,5 +6,7 @@ class RouteConfig {
     homeViewRoute.define(router);
     authViewRoute.define(router);
     pokemonDetailRoute.define(router);
+    signInRoute.define(router);
+    signUpRoute.define(router);
   }
 }

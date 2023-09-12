@@ -8,7 +8,7 @@ import 'package:pokemon/providers/pokemon_favorite_provider.dart';
 import 'package:pokemon/providers/pokemon_provider.dart';
 import 'package:pokemon/services/api_service.dart';
 import 'package:pokemon/services/database_services.dart';
-import 'package:pokemon/views/auth_view.dart';
+import 'package:pokemon/views/auth/auth_view.dart';
 import 'package:pokemon/views/home_view.dart';
 import 'package:provider/provider.dart';
 

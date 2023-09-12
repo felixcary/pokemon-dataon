@@ -10,6 +10,7 @@ class AuthViewProvider extends ChangeNotifier {
     required this.databaseService,
   }) : super();
 
+  String name = '';
   String email = '';
   String password = '';
   String token = '';
@@ -34,7 +35,7 @@ class AuthViewProvider extends ChangeNotifier {
 
   Future<void> saveUserToDatabase() async {
     warningMessage = '';
-    final newUser = UserModel(email: email, password: password);
+    final newUser = UserModel(name: name, email: email, password: password);
     await databaseService.insertUser(newUser);
     notifyListeners();
   }
