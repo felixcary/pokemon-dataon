@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokemon/providers/tab_provider.dart';
+import 'package:pokemon/views/pokemon_favorite/pokemon_favorite_view.dart';
 import 'package:pokemon/views/pokemon_list/pokemon_list_view.dart';
 import 'package:pokemon/views/profile_view.dart';
 import 'package:provider/provider.dart';
@@ -16,21 +17,27 @@ class HomeView extends StatelessWidget {
         return Scaffold(
           body: _buildPage(tabProvider.currentIndex),
           bottomNavigationBar: BottomNavigationBar(
+            selectedItemColor: const Color(0xFF173EA5),
             currentIndex: tabProvider.currentIndex,
+            showSelectedLabels: true,
+            showUnselectedLabels: false,
             onTap: (int index) {
               tabProvider.setCurrentIndex(index);
             },
             items: const [
               BottomNavigationBarItem(
-                icon: Icon(Icons.home),
+                icon: Icon(Icons.home_outlined),
+                activeIcon: Icon(Icons.home),
                 label: 'Home',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.favorite_border),
+                activeIcon: Icon(Icons.favorite),
                 label: 'Favorite',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.account_circle_outlined),
+                activeIcon: Icon(Icons.account_circle),
                 label: 'Profile',
               ),
             ],
@@ -45,27 +52,11 @@ class HomeView extends StatelessWidget {
       case 0:
         return const PokemonListView();
       case 1:
-        return const TabPage(title: 'Favorite');
+        return const PokemonFavoriteView();
       case 2:
         return const ProfileView(title: 'Profile');
       default:
         return Container();
     }
-  }
-}
-
-class TabPage extends StatelessWidget {
-  final String title;
-
-  const TabPage({super.key, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        title,
-        style: const TextStyle(fontSize: 24.0),
-      ),
-    );
   }
 }
