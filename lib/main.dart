@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pokemon/app.dart';
-import 'package:pokemon/providers/auth_view_provider.dart';
+import 'package:pokemon/providers/auth_provider.dart';
 import 'package:pokemon/providers/pokemon_detail_provider.dart';
 import 'package:pokemon/providers/pokemon_favorite_provider.dart';
 import 'package:pokemon/providers/pokemon_provider.dart';
+import 'package:pokemon/providers/profile_provider.dart';
 import 'package:pokemon/services/api_service.dart';
 import 'package:pokemon/services/database_services.dart';
 import 'package:pokemon/views/auth/auth_view.dart';
@@ -32,7 +33,7 @@ void setupDependencyInjection() {
   getIt.registerLazySingleton(() => ApiService());
   getIt.registerLazySingleton(() => DatabaseService());
   getIt.registerFactory(
-    () => AuthViewProvider(
+    () => AuthProvider(
       databaseService: getIt.get<DatabaseService>(),
     ),
   );
@@ -53,6 +54,11 @@ void setupDependencyInjection() {
       databaseService: getIt.get<DatabaseService>(),
     ),
   );
+  getIt.registerFactory(
+    () => ProfileProvider(
+      databaseService: getIt.get<DatabaseService>(),
+    ),
+  );
 }
 
 class PokemonApp extends StatelessWidget {
@@ -62,14 +68,14 @@ class PokemonApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: ChangeNotifierProvider<AuthViewProvider>(
-        create: (context) => GetIt.I.get<AuthViewProvider>(),
+      home: ChangeNotifierProvider<AuthProvider>(
+        create: (context) => GetIt.I.get<AuthProvider>(),
         builder: (context, child) {
-          final authViewProvider = Provider.of<AuthViewProvider>(context);
+          final authProvider = Provider.of<AuthProvider>(context);
           return FutureBuilder(
-            future: authViewProvider.getUserDummyToken(),
+            future: authProvider.getUserDummyToken(),
             builder: (context, snapshot) {
-              if (authViewProvider.token.isNotEmpty) {
+              if (authProvider.token.isNotEmpty) {
                 return const HomeView();
               }
               return const AuthView();

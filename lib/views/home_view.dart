@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pokemon/providers/tab_provider.dart';
 import 'package:pokemon/views/pokemon_favorite/pokemon_favorite_view.dart';
 import 'package:pokemon/views/pokemon_list/pokemon_list_view.dart';
-import 'package:pokemon/views/profile_view.dart';
+import 'package:pokemon/views/profile_view/profile_view.dart';
 import 'package:provider/provider.dart';
 
 class HomeView extends StatelessWidget {

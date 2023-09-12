@@ -11,8 +11,7 @@ class PokemonSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<PokemonProvider>(
-        builder: (context, authViewProvider, child) {
+    return Consumer<PokemonProvider>(builder: (context, authProvider, child) {
       return TextFormField(
         controller: searchController,
         decoration: InputDecoration(

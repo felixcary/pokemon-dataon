@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pokemon/app.dart';
 import 'package:pokemon/config/routes/app_routes.dart';
-import 'package:pokemon/providers/auth_view_provider.dart';
+import 'package:pokemon/providers/auth_provider.dart';
 import 'package:pokemon/styles/colors.dart';
 import 'package:pokemon/utils/string_utils.dart';
 import 'package:provider/provider.dart';
@@ -17,10 +17,10 @@ class SignUpView extends StatelessWidget {
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
 
-    return ChangeNotifierProvider<AuthViewProvider>(
-      create: (context) => GetIt.I.get<AuthViewProvider>(),
+    return ChangeNotifierProvider<AuthProvider>(
+      create: (context) => GetIt.I.get<AuthProvider>(),
       builder: (context, child) {
-        final authViewProvider = Provider.of<AuthViewProvider>(context);
+        final authProvider = Provider.of<AuthProvider>(context);
         return Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
@@ -55,14 +55,14 @@ class SignUpView extends StatelessWidget {
                         width: MediaQuery.of(context).size.width * 0.4,
                       ),
                       const SizedBox(height: 24),
-                      Consumer<AuthViewProvider>(
-                        builder: (context, authViewProvider, child) {
+                      Consumer<AuthProvider>(
+                        builder: (context, authProvider, child) {
                           return TextFormField(
                             controller: nameController,
                             decoration:
                                 const InputDecoration(labelText: 'Name'),
                             onChanged: (newName) {
-                              authViewProvider.name = newName;
+                              authProvider.name = newName;
                             },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -76,14 +76,14 @@ class SignUpView extends StatelessWidget {
                           );
                         },
                       ),
-                      Consumer<AuthViewProvider>(
-                        builder: (context, authViewProvider, child) {
+                      Consumer<AuthProvider>(
+                        builder: (context, authProvider, child) {
                           return TextFormField(
                             controller: emailController,
                             decoration:
                                 const InputDecoration(labelText: 'Email'),
                             onChanged: (newEmail) {
-                              authViewProvider.email = newEmail;
+                              authProvider.email = newEmail;
                             },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -97,8 +97,8 @@ class SignUpView extends StatelessWidget {
                           );
                         },
                       ),
-                      Consumer<AuthViewProvider>(
-                        builder: (context, authViewProvider, child) {
+                      Consumer<AuthProvider>(
+                        builder: (context, authProvider, child) {
                           return TextFormField(
                             controller: passwordController,
                             decoration:
@@ -114,17 +114,17 @@ class SignUpView extends StatelessWidget {
                               return null;
                             },
                             onChanged: (newPassword) {
-                              authViewProvider.password = newPassword;
+                              authProvider.password = newPassword;
                             },
                           );
                         },
                       ),
                       Visibility(
-                        visible: authViewProvider.warningMessage.isNotEmpty,
+                        visible: authProvider.warningMessage.isNotEmpty,
                         child: Padding(
                           padding: const EdgeInsets.only(top: 16),
                           child: Text(
-                            authViewProvider.warningMessage,
+                            authProvider.warningMessage,
                             style: const TextStyle(
                               color: Colors.red,
                             ),
@@ -137,25 +137,24 @@ class SignUpView extends StatelessWidget {
                         child: ElevatedButton(
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
-                              authViewProvider
+                              authProvider
                                   .getUserFromDatabase()
                                   .then((existingUser) {
-                                final String password =
-                                    authViewProvider.password;
+                                final String password = authProvider.password;
 
                                 if (existingUser != null &&
                                     existingUser.password == password) {
                                   _navigateToHome(
                                     context: context,
-                                    authViewProvider: authViewProvider,
+                                    authProvider: authProvider,
                                   );
                                 } else {
-                                  authViewProvider
+                                  authProvider
                                       .saveUserToDatabase()
                                       .then((value) {
                                     _navigateToHome(
                                       context: context,
-                                      authViewProvider: authViewProvider,
+                                      authProvider: authProvider,
                                     );
                                   });
                                 }
@@ -188,9 +187,9 @@ class SignUpView extends StatelessWidget {
 
   void _navigateToHome({
     required BuildContext context,
-    required AuthViewProvider authViewProvider,
+    required AuthProvider authProvider,
   }) {
-    authViewProvider.saveUserDummyToken();
+    authProvider.saveUserDummyToken();
     App().router.navigateTo(
           context,
           homeViewRoute.name,

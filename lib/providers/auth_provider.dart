@@ -3,10 +3,10 @@ import 'package:pokemon/models/user_model.dart';
 import 'package:pokemon/services/database_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AuthViewProvider extends ChangeNotifier {
+class AuthProvider extends ChangeNotifier {
   final DatabaseService databaseService;
 
-  AuthViewProvider({
+  AuthProvider({
     required this.databaseService,
   }) : super();
 
