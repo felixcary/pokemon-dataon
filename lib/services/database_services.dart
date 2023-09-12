@@ -36,7 +36,8 @@ class DatabaseService {
         id INTEGER PRIMARY KEY,
         name TEXT,
         email TEXT,
-        password TEXT
+        password TEXT,
+        avatar TEXT
       )
     ''');
   }
@@ -75,12 +76,13 @@ class DatabaseService {
 
   Future<void> updateProfile({
     required String newName,
+    required String avatar,
     required int id,
   }) async {
     final db = await open();
     await db.update(
       usersTable,
-      {'name': newName},
+      {'name': newName, 'avatar': avatar},
       where: 'id = ?',
       whereArgs: [id],
     );

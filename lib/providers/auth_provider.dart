@@ -29,7 +29,12 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> saveUserToDatabase() async {
     warningMessage = '';
-    final newUser = UserModel(name: name, email: email, password: password);
+    final newUser = UserModel(
+      name: name,
+      email: email,
+      password: password,
+      avatar: '',
+    );
     await databaseService.insertUser(newUser);
     notifyListeners();
   }

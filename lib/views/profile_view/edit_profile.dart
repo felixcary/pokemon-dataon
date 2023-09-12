@@ -117,7 +117,7 @@ class EditProfileView extends StatelessWidget {
                             profileProvider.setWarningMessage();
                           } else {
                             await profileProvider
-                                .updateUser(
+                                .updateUserName(
                               newName: nameController.text,
                             )
                                 .then((value) {

@@ -3,12 +3,14 @@ class UserModel {
   String name;
   String email;
   String password;
+  String avatar;
 
   UserModel({
     this.id,
     required this.name,
     required this.email,
     required this.password,
+    required this.avatar,
   });
 
   Map<String, dynamic> toMap() {
@@ -17,6 +19,7 @@ class UserModel {
       'name': name,
       'email': email,
       'password': password,
+      'avatar': avatar,
     };
   }
 
@@ -26,6 +29,7 @@ class UserModel {
       name: map['name'],
       email: map['email'],
       password: map['password'],
+      avatar: map['avatar'],
     );
   }
 }

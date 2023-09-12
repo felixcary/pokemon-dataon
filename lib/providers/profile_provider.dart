@@ -37,9 +37,19 @@ class ProfileProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateUser({required String newName}) async {
+  Future<void> updateUserName({required String newName}) async {
     await databaseService.updateProfile(
       newName: newName,
+      avatar: userModel!.avatar,
+      id: userModel!.id!,
+    );
+    getUserFromDatabase();
+  }
+
+  Future<void> updateUserAvatar({required String avatar}) async {
+    await databaseService.updateProfile(
+      newName: userModel!.name,
+      avatar: avatar,
       id: userModel!.id!,
     );
     getUserFromDatabase();

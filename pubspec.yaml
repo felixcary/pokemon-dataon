@@ -11,6 +11,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   cached_network_image: ^3.2.3
   fluro: ^2.0.5
+  image_picker: ^1.0.4
   get_it: ^7.6.0
   provider: ^6.0.5
   shared_preferences: ^2.2.1

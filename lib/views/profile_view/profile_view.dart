@@ -1,9 +1,15 @@
+import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pokemon/app.dart';
 import 'package:pokemon/config/routes/app_routes.dart';
 import 'package:pokemon/providers/profile_provider.dart';
 import 'package:pokemon/styles/colors.dart';
+import 'package:pokemon/widgets/loading_widget.dart';
 import 'package:provider/provider.dart';
 
 class ProfileView extends StatelessWidget {
@@ -18,6 +24,10 @@ class ProfileView extends StatelessWidget {
           GetIt.I.get<ProfileProvider>()..getUserFromDatabase(),
       builder: (context, child) {
         final profileProvider = Provider.of<ProfileProvider>(context);
+        if (profileProvider.userModel == null) {
+          return const Center(child: LoadingWidget());
+        }
+
         return Scaffold(
           backgroundColor: Colors.white,
           body: SafeArea(
@@ -37,13 +47,24 @@ class ProfileView extends StatelessWidget {
                       );
                     },
                   ),
-                  leading: Container(
-                    margin: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    child: Image.asset(
-                      'assets/images/logo.png',
+                  leading: InkWell(
+                    onTap: () async {
+                      _showImagePickerModal(
+                        context: context,
+                        profileProvider: profileProvider,
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: profileProvider.userModel!.avatar.isNotEmpty
+                          ? Image.memory(
+                              base64Decode(profileProvider.userModel!.avatar),
+                            )
+                          : Image.asset('assets/images/default.png'),
                     ),
                   ),
                   backgroundColor: Colors.white,
@@ -175,6 +196,60 @@ class ProfileView extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _pickImage({
+    required ImageSource source,
+    required ProfileProvider profileProvider,
+  }) async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: source, maxHeight: 200);
+    if (pickedFile != null) {
+      var image = File(pickedFile.path);
+      final bytes = await image.readAsBytes();
+      final avatarString = base64Encode(bytes);
+      profileProvider.updateUserAvatar(avatar: avatarString);
+    } else {
+      log('No image selected.');
+    }
+  }
+
+  void _showImagePickerModal({
+    required BuildContext context,
+    required ProfileProvider profileProvider,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: const Text('Pick from Gallery'),
+              onTap: () {
+                _pickImage(
+                  source: ImageSource.gallery,
+                  profileProvider: profileProvider,
+                );
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: const Text('Take a Photo'),
+              onTap: () {
+                _pickImage(
+                  source: ImageSource.camera,
+                  profileProvider: profileProvider,
+                );
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
