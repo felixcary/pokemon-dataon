@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokemon/providers/pokemon_provider.dart';
+import 'package:pokemon/utils/color_utils.dart';
 import 'package:pokemon/utils/string_utils.dart';
 import 'package:pokemon/widgets/cached_image.dart';
 import 'package:provider/provider.dart';
@@ -52,42 +53,33 @@ class PokemonListView extends StatelessWidget {
                     vertical: 8,
                   ),
                   decoration: ShapeDecoration(
-                    color: const Color(0xFF333333),
+                    color: ColorUtil.getTypeColor(pokemonProvider.selectedType),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(49),
                     ),
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            StringUtil.capitalizeWords(
-                              pokemonProvider.selectedType,
-                            ),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          const SizedBox(
-                            width: 10,
-                            height: 24,
-                            child: Icon(
-                              Icons.keyboard_arrow_down,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
+                      Text(
+                        StringUtil.capitalizeWords(
+                          pokemonProvider.selectedType,
+                        ),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      const SizedBox(
+                        width: 10,
+                        height: 24,
+                        child: Icon(
+                          Icons.keyboard_arrow_down,
+                          color: Colors.white,
+                        ),
                       ),
                     ],
                   ),
@@ -196,7 +188,7 @@ class PokemonListView extends StatelessWidget {
                         vertical: 16,
                       ),
                       decoration: ShapeDecoration(
-                        color: const Color(0xFF333333),
+                        color: ColorUtil.getTypeColor(type),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(49),
                         ),
