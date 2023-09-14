@@ -1,16 +1,32 @@
-# pokemon
+A Pokemon app
 
-A new Flutter project.
+**This application has been tested on:**
+- Android Redmi 10 (Android 12, MIUI 13)
+- Android Studio Emulator (SDK 30)
 
-## Getting Started
+**Minimum Requirement:**
+- Android SDK 21 (Android 5.0)
+  
+**Recommended Requirement:**
+- Android SDK 30 (Android 11)
 
-This project is a starting point for a Flutter application.
+**Instruction to build and run app:**
+- Download the project and open using visual studio code
+- Go to pubspec.yaml and run "flutter pub get" to download required library
+- Run it on simulator or real device
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+**Feature and Tech Stack:**
+- Pages:
+    - Auth, Sign In & Sign Up
+    - Pokemon List By Type
+    - Pokemon Detail
+    - Pokemon Favorite
+    - Profile
+- Provider State Management
+- Dependency Injection using GetIt
+- Offline capability using SQFLITE to store the data locally for favorite pokemon
+- Image loading and caching
+- Implement filter pokemon list by type
+- Implement search pokemon list
+- Implement add favorite pokemon
+- Implement change profile photo from camera or gallery
